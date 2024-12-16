@@ -1,0 +1,10 @@
+Flask
+celery
+redis
+psycopg2-binary
+SQLAlchemy
+pandas
+scikit-learn
+python-dateutil
+rethinkdb
+python-dotenv

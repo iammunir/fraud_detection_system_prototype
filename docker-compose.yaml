@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  fraud_detection_backend:
+    build:
+      context: ./fraud_detection_backend
+      dockerfile: Dockerfile
+    container_name: fraud_detection_backend
+    environment:
+      POSTGRES_HOST: postgresdb
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: fraud_detection
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_DB_BROKER: 0
+      REDIS_DB_BACKEND: 1
+      REDIS_PASSWORD: redis_pass
+      RETHINK_HOST: rethinkdb
+      RETHINK_PORT: 28015
+      RETHINK_DB: fraud_detection
+    ports:
+      - "5000:5000"
+    depends_on:
+      - redis
+      - postgresdb
+      - rethinkdb
+
+  fraud_detection_system:
+    build:
+      context: ./fraud-detection-system
+      dockerfile: Dockerfile
+    environment:
+      RETHINK_HOST: rethinkdb
+      RETHINK_PORT: 28015
+      RETHINK_DB: fraud_detection
+    ports:
+      - "3000:3000"
+    depends_on:
+      - rethinkdb
+
+  celery:
+    build:
+      context: .
+      dockerfile: ./celery/Dockerfile
+    environment:
+      POSTGRES_HOST: postgresdb
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: fraud_detection
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_DB_BROKER: 0
+      REDIS_DB_BACKEND: 1
+      REDIS_PASSWORD: redis_pass
+      RETHINK_HOST: rethinkdb
+      RETHINK_PORT: 28015
+      RETHINK_DB: fraud_detection
+    depends_on:
+      - redis
+      - postgresdb
+      - rethinkdb
+
+  transaction_generator:
+    build:
+      context: ./transaction_generator
+      dockerfile: Dockerfile
+    environment:
+      API_URL: http://fraud_detection_backend:5000/process_transactions
+    depends_on:
+      - fraud_detection_backend
+
+  redis:
+    image: redis:6.2
+    container_name: redis
+    command: ["redis-server", "--requirepass", "redis_pass"]
+    ports:
+      - "6379:6379"
+
+  postgresdb:
+    image: postgres:latest
+    container_name: postgresdb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: fraud_detection
+    ports:
+      - "5432:5432"
+
+  rethinkdb:
+    image: rethinkdb:2.4.1
+    container_name: rethinkdb
+    ports:
+      - "28015:28015"
+      - "8080:8080"

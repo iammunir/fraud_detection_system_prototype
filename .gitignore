@@ -1,0 +1,14 @@
+fraud_detection_backend/.venv
+fraud_detection_backend/__pycache__
+fraud_detection_backend/config/random_forest_adasyn.pkl
+
+modeling
+
+fraud-detection-system/.next
+fraud-detection-system/node_modules
+fraud-detection-system/.env*
+
+flow_backend.txt
+flow_dashboard.txt
+flow_docker.txt
+flow_generator.txt

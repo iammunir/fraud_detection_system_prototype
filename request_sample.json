@@ -1,0 +1,15 @@
+[
+    {
+	    "trans_num": "1f76529f8574734946361c461b024d99",
+	    "trans_date": "2024-11-26",
+	    "trans_time": "00:17:40",
+	    "cc_num": "2703186189652095",
+	    "merchant": "Friend Heller, Gutmann and Zieme",
+	    "first": "Jennifer",
+	    "last": "Gill",
+	    "gender": "F",
+	    "category": "grocery_net",
+	    "amt": 1220.11,
+        "dob": "1988-12-24"
+	}
+]
